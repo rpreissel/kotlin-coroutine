@@ -24,25 +24,12 @@ inline fun <reified T> ServerResponse.BodyBuilder.monoBody(
     mono: Mono<T>
 ): Mono<ServerResponse> = body(mono, T::class.java)
 
+
 inline fun <reified T> ServerResponse.BodyBuilder.fluxBody(
     context: CoroutineContext = Unconfined,
-    noinline onSubscribe: ((Subscription) -> Unit)? = null,
-    noinline onFinally: ((SignalType) -> Unit)? = null,
     noinline block: suspend ProducerScope<T>.() -> Unit
-): Mono<ServerResponse> = body(
-    flux(context, block)
-        .doOnSubscribeWithCheck(onSubscribe)
-        .doFinallyWithCheck(onFinally), T::class.java
-)
+): Mono<ServerResponse> = body(flux(context, block), T::class.java)
 
-@PublishedApi
-internal fun <T> Flux<T>.doFinallyWithCheck(onFinally: ((SignalType) -> Unit)?): Flux<T> =
-    onFinally?.let {
-        doFinally(it)
-    } ?: this
-
-@PublishedApi
-internal fun <T> Flux<T>.doOnSubscribeWithCheck(onSubscribe: ((Subscription) -> Unit)?): Flux<T> =
-    onSubscribe?.let {
-        doOnSubscribe(onSubscribe)
-    } ?: this
+inline fun <reified T> ServerResponse.BodyBuilder.fluxBody(
+    flux: Flux<T>
+): Mono<ServerResponse> = body(flux, T::class.java)

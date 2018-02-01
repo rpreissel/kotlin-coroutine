@@ -6,6 +6,10 @@ import java.io.OutputStream
 import javax.imageio.ImageIO
 
 fun combineImages(imageList: Collection<BufferedImage>): BufferedImage {
+    if(imageList.isEmpty()) {
+        return BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR)
+    }
+
     val yDim = Math.sqrt(imageList.size.toDouble()).toInt()
     val xDim = (imageList.size + yDim - 1) / yDim
 

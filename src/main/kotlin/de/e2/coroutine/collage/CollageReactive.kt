@@ -9,10 +9,12 @@ import kotlinx.coroutines.experimental.reactor.flux
 import kotlinx.coroutines.experimental.reactor.mono
 import kotlinx.coroutines.experimental.runBlocking
 import org.springframework.core.io.ByteArrayResource
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 import java.awt.image.BufferedImage
 import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
@@ -63,10 +65,14 @@ fun retrieveImagesAsFlux(
 private suspend fun requestImageUrls(query: String, count: Int = 20): List<String> {
     return ReactorClient
         .pixabay("q=$query&per_page=$count")
-        .retrieve()
-        .bodyToMono<String>()
-        .map { response ->
-            JsonPath.read<List<String>>(response, "$..previewURL")
+        .exchange()
+        .flatMap { clientResponse ->
+            when(clientResponse.statusCode()) {
+                HttpStatus.OK -> clientResponse.bodyToMono<String>().map { response->
+                    JsonPath.read<List<String>>(response, "$..previewURL")
+                }
+                else -> listOf<String>().toMono()
+            }
         }.awaitSingle()
 }
 
