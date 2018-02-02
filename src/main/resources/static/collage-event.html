@@ -43,7 +43,7 @@
             this.source.addEventListener('message', (e) => {
                 console.log(e.data);
                 this.setState({
-                    imageUrl: e.data
+                    imageUrl: e.data + "?" + Date.now()
                 });
             }, false);
         }

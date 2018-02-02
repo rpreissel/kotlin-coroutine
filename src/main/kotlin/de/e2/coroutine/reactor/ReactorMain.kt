@@ -67,7 +67,7 @@ class ReactorApplication {
                     val byteArrayResource = ByteArrayOutputStream()
                     ImageIO.write(collage, "png", byteArrayResource)
                     eventImages.put(clientId, ByteArrayResource(byteArrayResource.toByteArray()))
-                    send("/event/$clientId?${System.currentTimeMillis()}")
+                    send("/event/$clientId")
                 }
             }.doFinally {
                 println("doFinally $it")
