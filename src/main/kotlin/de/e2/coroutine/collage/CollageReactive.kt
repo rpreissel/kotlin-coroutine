@@ -62,21 +62,23 @@ fun retrieveImagesAsFlux(
     }
 }
 
-private suspend fun requestImageUrls(query: String, count: Int = 20): List<String> {
+suspend fun requestImageUrls(query: String, count: Int = 20): List<String> {
     return ReactorClient
-        .pixabay("q=$query&per_page=$count")
+        .pixabay("q=$query&per_page=200")
         .exchange()
         .flatMap { clientResponse ->
-            when(clientResponse.statusCode()) {
-                HttpStatus.OK -> clientResponse.bodyToMono<String>().map { response->
+            when (clientResponse.statusCode()) {
+                HttpStatus.OK -> clientResponse.bodyToMono<String>().map { response ->
                     JsonPath.read<List<String>>(response, "$..previewURL")
                 }
                 else -> listOf<String>().toMono()
             }
+        }.map { result ->
+            result.shuffled().take(count)
         }.awaitSingle()
 }
 
-private suspend fun requestImageData(imageUrl: String): BufferedImage {
+suspend fun requestImageData(imageUrl: String): BufferedImage {
     return ReactorClient
         .url(imageUrl)
         .accept(APPLICATION_OCTET_STREAM)

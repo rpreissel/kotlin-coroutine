@@ -19,10 +19,10 @@ fun loadOneImage(query: String): BufferedImage {
 }
 
 private fun requestImageUrl(query: String): String {
-    val json = JerseyClient.pixabay("q=$query")
+    val json = JerseyClient.pixabay("q=$query&per_page=200")
         .request()
         .get(String::class.java)
-    return JsonPath.read<List<String>>(json, "$..previewURL").firstOrNull()
+    return JsonPath.read<List<String>>(json, "$..previewURL").shuffled().firstOrNull()
             ?: throw IllegalStateException("No image found")
 }
 

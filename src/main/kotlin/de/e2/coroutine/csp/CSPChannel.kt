@@ -65,13 +65,13 @@ suspend fun retrieveImages(query: String, channel: SendChannel<BufferedImage>) {
 }
 
 private suspend fun requestImageUrl(query: String) = suspendCoroutine<String> { cont ->
-    JerseyClient.pixabay("q=$query")
+    JerseyClient.pixabay("q=$query&per_page=200")
         .request()
         .async()
         .get(object : InvocationCallback<String> {
             override fun completed(response: String) {
                 val urls = JsonPath.read<List<String>>(response, "$..previewURL")
-                val url = urls.firstOrNull() ?: return failed(IllegalStateException("No image found"))
+                val url = urls.shuffled().firstOrNull() ?: return failed(IllegalStateException("No image found"))
                 cont.resume(url)
             }
 
