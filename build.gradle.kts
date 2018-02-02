@@ -20,13 +20,14 @@ apply {
 
 plugins {
     val kotlinVersion = "1.2.21"
+    application
+
     id("org.jetbrains.kotlin.jvm") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.allopen") version kotlinVersion
     id("io.spring.dependency-management") version "1.0.4.RELEASE"
 }
 
-println(project.extra.properties)
 
 group = "de.e2"
 version = "1.0.0-SNAPSHOT"
@@ -59,6 +60,10 @@ dependencies {
 
 kotlin {
     experimental.coroutines = Coroutines.ENABLE
+}
+
+application {
+    mainClassName = "de.e2.coroutine.reactor.ReactorApplication"
 }
 
 configure<JavaPluginConvention> {

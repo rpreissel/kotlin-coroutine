@@ -49,7 +49,7 @@ suspend fun createCollageAsyncAwait(
 
 ---
 
-##### Auf das erste Ereignisse warten - Select
+##### Auf das erste Ereigniss warten - Select
 
 ```kotlin
 suspend fun loadFastestImage(query: String, count: Int): BufferedImage {
