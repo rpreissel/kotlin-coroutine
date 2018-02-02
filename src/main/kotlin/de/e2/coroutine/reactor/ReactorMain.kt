@@ -9,7 +9,6 @@ import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.reactor.flux
 import kotlinx.coroutines.experimental.reactor.mono
-import kotlinx.coroutines.experimental.selects.select
 import kotlinx.coroutines.experimental.selects.selectUnbiased
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -23,7 +22,6 @@ import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
 import kotlin.coroutines.experimental.CoroutineContext
 
@@ -96,16 +94,14 @@ suspend fun createCollage(
     count: Int,
     vararg channels: ReceiveChannel<BufferedImage>
 ): BufferedImage {
-    while (true) {
-        val images = (1..count).map {
-            selectUnbiased<BufferedImage> {
-                channels.forEach { channel ->
-                    channel.onReceive { it }
-                }
+    val images = (1..count).map {
+        selectUnbiased<BufferedImage> {
+            channels.forEach { channel ->
+                channel.onReceive { it }
             }
         }
-        return combineImages(images)
     }
+    return combineImages(images)
 }
 
 suspend fun retrieveImages(
@@ -113,15 +109,14 @@ suspend fun retrieveImages(
     context: CoroutineContext
 ): ReceiveChannel<BufferedImage> = produce(context) {
     while (isActive) {
-        try {
-            val urls = requestImageUrls(query, 20)
-            for (url in urls) {
-                val image = requestImageData(url)
-                send(image)
-                delay(1000)
-            }
-        } catch (exc: Exception) {
-            delay(1, TimeUnit.SECONDS)
+        val urls = requestImageUrls(query, 20)
+        for (url in urls) {
+            val image = requestImageData(url)
+            send(image)
+            delay(1000)
+        }
+        if (urls.isEmpty()) {
+            delay(1000)
         }
     }
 }
