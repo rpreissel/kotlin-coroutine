@@ -205,9 +205,12 @@ val catsChannel = retrieveImages("cats")
 ##### Consumer
 
 ```kotlin
-suspend fun createCollage(count: Int, vararg channels: ReceiveChannel<BufferedImage>) {
+suspend fun createCollage(
+    count: Int,
+    vararg channels: ReceiveChannel<BufferedImage>
+): BufferedImage {
   ...
-  select<BufferedImage> {
+  selectUnbiased<BufferedImage> {
       channels.forEach { channel ->
           channel.onReceive { it }
       }
@@ -218,10 +221,10 @@ suspend fun createCollage(count: Int, vararg channels: ReceiveChannel<BufferedIm
 createCollage(4, catsChannel, dogsChannel)
 ```
 
-<span class="fragment current-only" data-code-focus="1"></span>
-<span class="fragment current-only" data-code-focus="3"></span>
-<span class="fragment current-only" data-code-focus="4-6"></span>
-<span class="fragment current-only" data-code-focus="11"></span>
+<span class="fragment current-only" data-code-focus="1-4"></span>
+<span class="fragment current-only" data-code-focus="6"></span>
+<span class="fragment current-only" data-code-focus="7-9"></span>
+<span class="fragment current-only" data-code-focus="14"></span>
 
 ---
 

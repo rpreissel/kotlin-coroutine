@@ -10,6 +10,7 @@ import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 import kotlinx.coroutines.experimental.selects.select
+import kotlinx.coroutines.experimental.selects.selectUnbiased
 import java.awt.image.BufferedImage
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -27,25 +28,28 @@ fun main(args: Array<String>): Unit = runBlocking {
         val catsChannel = retrieveImages("cats")
 
         launch(Unconfined) {
-            createCollage(4, catsChannel, dogsChannel)
+            var imageId = 0
+            while(isActive) {
+                val collage = createCollage(4, catsChannel, dogsChannel)
+                ImageIO.write(collage, "png", FileOutputStream("image-${imageId++}.png"))
+            }
         }
         delay(1, TimeUnit.HOURS)
     }
 }
 
-suspend fun createCollage(count: Int, vararg channels: ReceiveChannel<BufferedImage>) {
-    var imageId = 0
-    while (true) {
-        val images = (1..count).map {
-            select<BufferedImage> {
-                channels.forEach { channel ->
-                    channel.onReceive { it }
-                }
+suspend fun createCollage(
+    count: Int,
+    vararg channels: ReceiveChannel<BufferedImage>
+): BufferedImage {
+    val images = (1..count).map {
+        selectUnbiased<BufferedImage> {
+            channels.forEach { channel ->
+                channel.onReceive { it }
             }
         }
-        val collage = combineImages(images)
-        ImageIO.write(collage, "png", FileOutputStream("image-${imageId++}.png"))
     }
+    return combineImages(images)
 }
 
 suspend fun retrieveImages(

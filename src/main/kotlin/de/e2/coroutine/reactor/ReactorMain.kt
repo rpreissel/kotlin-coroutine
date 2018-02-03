@@ -1,19 +1,17 @@
 package de.e2.coroutine.reactor
 
-import de.e2.coroutine.collage.reactive.createCollage
 import de.e2.coroutine.collage.reactive.requestImageData
 import de.e2.coroutine.collage.reactive.requestImageUrls
-import de.e2.coroutine.combineImages
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.reactor.flux
 import kotlinx.coroutines.experimental.reactor.mono
-import kotlinx.coroutines.experimental.selects.selectUnbiased
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.ClassPathResource
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.BodyInserters.fromObject
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -24,6 +22,8 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.imageio.ImageIO
 import kotlin.coroutines.experimental.CoroutineContext
+import de.e2.coroutine.collage.reactive.createCollage as createCollageReactive
+import de.e2.coroutine.csp.producer.createCollage as createCollageProducer
 
 
 @SpringBootApplication
@@ -31,10 +31,18 @@ class ReactorApplication {
 
     @Bean
     fun router() = router {
+
+        //Workaround for https://github.com/spring-projects/spring-boot/issues/9785
+        val indexHtml = ClassPathResource("static/index.html")
+
+        GET("/") {
+            ServerResponse.ok().contentType(MediaType.TEXT_HTML).syncBody(indexHtml)
+        }
+
         GET("/query/{query}") { request ->
             val query = request.pathVariable("query")
             val mono = mono {
-                val collage = createCollage(query, 20)
+                val collage = createCollageReactive(query, 20)
                 val byteArrayResource = ByteArrayOutputStream()
                 ImageIO.write(collage, "png", byteArrayResource)
                 ByteArrayResource(byteArrayResource.toByteArray())
@@ -63,7 +71,7 @@ class ReactorApplication {
                 val cats = retrieveImages("cat", coroutineContext);
                 val turtle = retrieveImages("turtle", coroutineContext);
                 while (isActive) {
-                    val collage = createCollage(20, dogs, cats, turtle)
+                    val collage = createCollageProducer(20, dogs, cats, turtle)
                     val byteArrayResource = ByteArrayOutputStream()
                     ImageIO.write(collage, "png", byteArrayResource)
                     eventImages.put(clientId, ByteArrayResource(byteArrayResource.toByteArray()))
@@ -88,20 +96,6 @@ class ReactorApplication {
             SpringApplication.run(ReactorApplication::class.java, *args)
         }
     }
-}
-
-suspend fun createCollage(
-    count: Int,
-    vararg channels: ReceiveChannel<BufferedImage>
-): BufferedImage {
-    val images = (1..count).map {
-        selectUnbiased<BufferedImage> {
-            channels.forEach { channel ->
-                channel.onReceive { it }
-            }
-        }
-    }
-    return combineImages(images)
 }
 
 suspend fun retrieveImages(

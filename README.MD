@@ -7,4 +7,4 @@ Ihren Pixabay-Key hineinkopieren.
 
 Den API-Key bekommen Sie unter <https://pixabay.com/api/docs/>, nachdem Sie sich bei Pixabay angemeldet haben. 
 
-Nach dem Starten der Anwendung ```./gradlew bootRun``` finden Sie unter <http://localhost:8080/index.html> eine kleine Webanwendung.
+Nach dem Starten der Anwendung ```./gradlew bootRun``` finden Sie unter <http://localhost:8080> eine kleine Webanwendung.
