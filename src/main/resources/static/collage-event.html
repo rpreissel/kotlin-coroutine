@@ -13,7 +13,7 @@
 <body>
 
 <div class="container">
-    <h1>Koroutinen in Kotlin</h1>
+    <h1>Events-Beispiel</h1>
     <div id="app"></div>
 </div>
 
@@ -59,14 +59,15 @@
 
         render() {
             return (
-                <div>
-                    <p>Aktuelle URL: {this.state.imageUrl ? this.state.imageUrl : ""}</p>
-
-                    {this.state.imageUrl &&
-                    <div>
-                        <img key={this.state.query} src={this.state.imageUrl}/>
+                <div className="card">
+                    <div className="card-body">
+                        <h5 className="card-title">Kollage von "Dogs, Cats und Turtles"</h5>
+                        <p className="card-text">Aktuelle Event URL: {this.state.imageUrl ? this.state.imageUrl : "Warten ..."}</p>
                     </div>
+                    {this.state.imageUrl &&
+                    <img className="card-img-bottom" key={this.state.imageUrl} src={this.state.imageUrl} alt="Card image cap"/>
                     }
+
                 </div>
             );
         }

@@ -6,3 +6,5 @@ Um den Beispielcode auszuführen müssen Sie unter ```src/main/resources``` eine
 Ihren Pixabay-Key hineinkopieren.
 
 Den API-Key bekommen Sie unter <https://pixabay.com/api/docs/>, nachdem Sie sich bei Pixabay angemeldet haben. 
+
+Nach dem Starten der Anwendung ```./gradlew bootRun``` finden Sie unter <http://localhost:8080/index.html> eine kleine Webanwendung.

@@ -13,7 +13,7 @@
 <body>
 
 <div class="container">
-    <h1>Kollage mit Query</h1>
+    <h1>Formular-Beispiel</h1>
     <div id="app"></div>
 </div>
 
@@ -50,21 +50,27 @@
         render() {
             return (
                 <div>
-                    <form onSubmit={this.submitQuery}>
-                        <div className="form-group col-sm-4 row">
-                            <label htmlFor="suchtext">Suchtext</label>
-                            <input className="form-control" id="suchtext"
-                                   placeholder="z.B. Dog" value={this.state.query} onChange={this.updateQuery}/>
-                            <small id="suchtextHelp" className="form-text text-muted">Bitte in Englisch eingeben</small>
-                        </div>
-                        <button type="submit" className="btn btn-primary">Erzeuge Kollage</button>
-                    </form>
+                    <div className="card">
+                        <form onSubmit={this.submitQuery}>
+                            <div className="form-group col-sm-4">
+                                <label htmlFor="suchtext">Suchtext</label>
+                                <input className="form-control" id="suchtext"
+                                       placeholder="z.B. Dog" value={this.state.query} onChange={this.updateQuery}/>
+                                <small id="suchtextHelp" className="form-text text-muted">Bitte in Englisch eingeben</small>
+                            </div>
+                            <div className="col-sm-4">
+                                <button type="submit" className="btn btn-primary">Erzeuge Kollage</button>
+                            </div>
+                        </form>
 
-                    {this.state.imageUrl &&
-                    <div>
-                        <img key={this.state.query} src={this.state.imageUrl}/>
+                        <div className="card-body">
+                            <p className="card-text">Aktuelle Query URL: {this.state.imageUrl ? this.state.imageUrl : "Warte auf Eingabe"}</p>
+                        </div>
+                        {this.state.imageUrl &&
+                        <img className="card-img-bottom" key={this.state.query} src={this.state.imageUrl} alt="Card image cap"/>
+                        }
+
                     </div>
-                    }
                 </div>
             );
         }
