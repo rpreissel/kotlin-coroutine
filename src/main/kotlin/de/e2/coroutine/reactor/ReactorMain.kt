@@ -90,6 +90,23 @@ class ReactorApplication {
 
     }
 
+    suspend fun retrieveImages(
+        query: String,
+        context: CoroutineContext
+    ): ReceiveChannel<BufferedImage> = produce(context) {
+        while (isActive) {
+            val urls = requestImageUrls(query, 20)
+            for (url in urls) {
+                val image = requestImageData(url)
+                send(image)
+                delay(1000)
+            }
+            if (urls.isEmpty()) {
+                delay(1000)
+            }
+        }
+    }
+
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
@@ -98,19 +115,3 @@ class ReactorApplication {
     }
 }
 
-suspend fun retrieveImages(
-    query: String,
-    context: CoroutineContext
-): ReceiveChannel<BufferedImage> = produce(context) {
-    while (isActive) {
-        val urls = requestImageUrls(query, 20)
-        for (url in urls) {
-            val image = requestImageData(url)
-            send(image)
-            delay(1000)
-        }
-        if (urls.isEmpty()) {
-            delay(1000)
-        }
-    }
-}
