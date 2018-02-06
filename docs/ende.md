@@ -1,10 +1,11 @@
 ### Zusammenfassung
 
- * __```suspend```__ als Compiler-Erweiterung zum Unterbrechen und Wiederaufsetzen von Funktionen
+ * __```suspend```__ konvertiert Funktionen zu Koroutinen
  * Sequential by Default / Asynchronous explicitly
- * Umsetzung von asynchronen Kommunikationsmustern als Library
- * Integration in vorhandene asynchrone APIs einfach möglich
+ * Asynchronen Kommunikationsmustern als Library
+ * Einfache Integration in vorhandene asynchrone APIs
  * Stackless: Suspendierungen nur in Koroutinen möglich<br/> [(Red/Blue Code Problem)](http://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/)
+ * Tooling / Debugging muss noch verbessert werden   
 
 ---
 
@@ -12,8 +13,10 @@
 
  * Stackfull-Koroutinen durch __Quasar__:
 https://github.com/puniverse/quasar
+
  * Oder durch Project __Loom__:
  http://cr.openjdk.java.net/~rpressler/loom/Loom-Proposal.html
+ https://www.youtube.com/watch?v=fpyub8fbrVE
 
 ---
 
