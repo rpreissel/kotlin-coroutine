@@ -66,13 +66,13 @@ fun createCollage(query: String, count: Int): BufferedImage {
 ```kotlin
 fun createCollage(query: String, count: Int, onSuccess: OnSuccess<BufferedImage>) {
     requestImageUrls(query, count) { urls ->
-        fun loadImage(
+        fun loadImages(
             urlIter: Iterator<String>,
             retrievedImages: List<BufferedImage>
         ) {
             if (urlIter.hasNext()) {
                 requestImageData(urlIter.next()) { image ->
-                    loadImage(urlIter, retrievedImages + image)
+                    loadImages(urlIter, retrievedImages + image)
                 }
             } else {
                 onSuccess(combineImages(retrievedImages))
@@ -162,6 +162,16 @@ suspend fun createCollage(query: String, count: Int): BufferedImage {
 
 ---
 
+##### Stackfull vs Stackless
+
+<ul>
+<li class="fragment">Stackfull: Suspendierungen sind __überall__ möglich</li>
+<li class="fragment">Stackless: Suspendierungen sind nur auf __oberster Ebene__ möglich</li>
+<li class="fragment">Kotlin implementiert __stackless__ Koroutinen</li>
+</ul>
+
+---
+
 ##### Continuations
 
 ```kotlin
@@ -223,16 +233,6 @@ fun createCollage(
 ##### Koroutinen
 
 <img src="img/coroutine-detail.png" width="50%">
-
----
-
-##### Stackfull vs Stackless
-
-<ul>
-<li class="fragment">Stackfull: Suspendierungen sind __überall__ möglich</li>
-<li class="fragment">Stackless: Suspendierungen sind nur auf __oberster Ebene__ möglich</li>
-<li class="fragment">Kotlin implementiert __stackless__ Koroutinen</li>
-</ul>
 
 ---
 
