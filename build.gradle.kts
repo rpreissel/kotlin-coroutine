@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.Coroutines
 
-val kotlinCoroutineVersion: String by extra { "0.22" }
+val kotlinCoroutineVersion: String by extra { "0.22.5" }
 
 buildscript {
     repositories {
@@ -10,7 +10,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RC1")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RELEASE")
     }
 }
 
@@ -19,7 +19,7 @@ apply {
 }
 
 plugins {
-    val kotlinVersion = "1.2.21"
+    val kotlinVersion = "1.2.30"
     application
 
     id("org.jetbrains.kotlin.jvm") version kotlinVersion

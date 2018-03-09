@@ -16,13 +16,13 @@ JavaLand, 2018
 
 ---
 
-### Schlechte Ressourcennutzung
+### Warum?
 
 <img src="img/utilization.png" width="70%">
 
 ---
 
-### Entscheidung ?
+### Entscheidung?
 
 <img src="img/blocking.png" width="60%">
 

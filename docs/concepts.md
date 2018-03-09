@@ -82,6 +82,9 @@ fun createCollage(query: String, count: Int, onSuccess: OnSuccess<BufferedImage>
     }
 }
 ```
+
+<small class="fragment current-only" data-code-focus="2,8"></small>
+<!--
 <span class="fragment current-only" data-code-focus="2-16"></span>
 <span class="fragment current-only" data-code-focus="3-14"></span>
 <span class="fragment current-only" data-code-focus="4"></span>
@@ -91,6 +94,7 @@ fun createCollage(query: String, count: Int, onSuccess: OnSuccess<BufferedImage>
 <span class="fragment current-only" data-code-focus="8-10"></span>
 <span class="fragment current-only" data-code-focus="9"></span>
 <span class="fragment current-only" data-code-focus="12"></span>
+-->
 
 ---
 
@@ -111,18 +115,23 @@ fun createCollage(query: String, count: Int): CompletableFuture<BufferedImage> {
         }.thenApply(::combineImages)
 }
 ```
+<small class="fragment current-only" data-code-focus="2,7"></small>
+<small class="fragment current-only" data-code-focus="3,5,6,7,12">Kombinatoren</small>
+
+<!--
 <small class="fragment current-only" data-code-focus="3-11">Es muss eine Abfolge von Futures erzeugt werden.</small>
 <small class="fragment current-only" data-code-focus="4">Starte mit einer leeren Liste.</small>
 <small class="fragment current-only" data-code-focus="5"></small>
 <small class="fragment current-only" data-code-focus="6-10">Hänge ein neues Future an das vorherige Future.</small>
 <small class="fragment current-only" data-code-focus="7-9"></small>
 <small class="fragment current-only" data-code-focus="12"></small>
+-->
 
 ---
 
 ##### Kollage mit Koroutinen
 
-<pre class="fragment" data-fragment-index="2">
+<pre class="fragment" data-fragment-index="3">
 <code class="kotlin">suspend fun requestImageUrls(query: String, count: Int = 20): List<String>
 suspend fun requestImageData(imageUrl: String): BufferedImage</code></pre>
 
@@ -136,8 +145,8 @@ suspend fun createCollage(query: String, count: Int): BufferedImage {
 }
 ```
 
-<small class="fragment current-only" data-code-focus="2" data-fragment-index="1">__suspend__ macht den Unterschied</small>
-<small class="fragment current-only" data-code-focus="3-4" data-fragment-index="3"></small>  
+<small class="fragment current-only" data-code-focus="3,4" data-fragment-index="1"></small>  
+<small class="fragment current-only" data-code-focus="2" data-fragment-index="2">__suspend__ macht den Unterschied</small>  
 
 
 ---
@@ -175,7 +184,7 @@ suspend fun createCollage(query: String, count: Int): BufferedImage {
 ##### Continuations
 
 ```kotlin
-suspend fun createCollageForLoop(query: String, count: Int): BufferedImage {
+suspend fun createCollage(query: String, count: Int): BufferedImage {
     val urls = requestImageUrls(query, count) //Label 0
     val images = mutableListOf<BufferedImage>() //Label 1
     for (index in 0 until urls.size) {
