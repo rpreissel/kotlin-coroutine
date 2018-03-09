@@ -44,7 +44,7 @@ body {
 .reveal h4,
 .reveal h5,
 .reveal h6 {
-  margin: 20px 0 100px 0;
+  margin: 20px 0 80px 0;
   color: #222;
   font-family: "Source Sans Pro", Helvetica, sans-serif;
   font-weight: 600;
@@ -228,7 +228,7 @@ body {
 .reveal section img {
   margin: 15px 0px;
   background: rgba(255, 255, 255, 0.12);
-  border: 4px solid #222;
+  border: 2px solid #93a1a1;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); }
 
 .reveal section img.plain {

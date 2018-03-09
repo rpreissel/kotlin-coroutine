@@ -31,3 +31,6 @@ https://github.com/puniverse/quasar
 [rene.preissel@etosquare.de](mailto:rene.preissel@etosquare.de)
 <br/>
 [www.etosquare.de](http://www.etosquare.de)
+<br>
+<br>
+https://github.com/rpreissel/kotlin-coroutine.git

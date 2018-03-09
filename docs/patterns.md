@@ -230,10 +230,13 @@ createCollage(4, catsChannel, dogsChannel)
 
 ##### Actor
 
-* Aktoren sind nebenläufige Einheiten
-* Kommunizieren nur über Nachrichten
-* Arbeiten alle Nachrichten sequentiell ab
-* Verwalten eigenen Zustand
+<ul>
+<li>Aktoren sind nebenläufige Einheiten</li>
+<li class="fragment">Kommunizieren nur über Nachrichten</li>
+<li class="fragment">Arbeiten alle Nachrichten sequentiell ab</li>
+<li class="fragment">Verwalten eigenen Zustand</li>
+</ul>
+
 
 ---
 
@@ -307,30 +310,19 @@ suspend fun retrieveImages(query: String, channel: SendChannel<BufferedImage>) {
 
 ##### Reactive Streams
 
-* Nachrichtenbasierend
-* Asynchron / Nicht-Blockierend
-* Unterstützung von Back-Pressure
-* API in Java 9 enthalten
-* Verschiedene Implementierungen: <br/>Reactor, RxJava, Akka Streams
+<ul>
+<li>Nachrichtenbasierend</li>
+<li class="fragment">Asynchron / Nicht-Blockierend</li>
+<li class="fragment">Unterstützung von Back-Pressure</li>
+<li class="fragment">API in Java 9 enthalten</li>
+<li class="fragment">Verschiedene Implementierungen: <br/>Reactor, RxJava, Akka Streams</li>
+</ul>
 
 ---
 
-##### Vom reaktivem Stream zu Suspend (Subscribe)
+##### Reactive Streams und Koroutinen
 
-```kotlin
-suspend fun requestImageUrls(query: String, count: Int = 20): List<String> {
-    return ReactorClient
-        .pixabay("q=$query&per_page=$count")
-        .retrieve()
-        .bodyToMono<String>()
-        .map { response ->
-            JsonPath.read<List<String>>(response, "$..previewURL")
-        }.awaitSingle()
-}
-```
-<small class="fragment current-only" data-code-focus="2">Beispiel nutzt Reactor/Spring</small>
-<small class="fragment current-only" data-code-focus="2-7"></small>
-<small class="fragment current-only" data-code-focus="8">Suspendieren der Koroutine bis ein Ergebnis da ist.</small>
+<img src="img/reactive.png" width="80%">
 
 ---
 
@@ -370,3 +362,23 @@ fun retrieveImagesAsFlux(
 ```
 <small class="fragment current-only" data-code-focus="1,4"></small>
 <small class="fragment current-only" data-code-focus="7-10">Ein ```Flux``` verhält sich wie ein ```Producer```.</small>
+
+---
+
+##### Vom reaktivem Stream zu Suspend (Subscribe)
+
+```kotlin
+suspend fun requestImageUrls(query: String, count: Int = 20): List<String> {
+    return ReactorClient
+        .pixabay("q=$query&per_page=$count")
+        .retrieve()
+        .bodyToMono<String>()
+        .map { response ->
+            JsonPath.read<List<String>>(response, "$..previewURL")
+        }.awaitSingle()
+}
+```
+<small class="fragment current-only" data-code-focus="2">Beispiel nutzt Reactor/Spring</small>
+<small class="fragment current-only" data-code-focus="2-7"></small>
+<small class="fragment current-only" data-code-focus="8">Suspendieren der Koroutine bis ein Ergebnis da ist.</small>
+

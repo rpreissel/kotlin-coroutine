@@ -148,6 +148,11 @@ suspend fun createCollage(query: String, count: Int): BufferedImage {
 <small class="fragment current-only" data-code-focus="3,4" data-fragment-index="1"></small>  
 <small class="fragment current-only" data-code-focus="2" data-fragment-index="2">__suspend__ macht den Unterschied</small>  
 
+---
+
+##### Koroutinen Entwickler
+
+<img src="img/twitter-coroutines.png" width="50%">
 
 ---
 
@@ -171,11 +176,11 @@ suspend fun createCollage(query: String, count: Int): BufferedImage {
 
 ---
 
-##### Stackfull vs Stackless
+##### Stackless vs Stackfull 
 
 <ul>
+<li class="fragment">Stackless: Suspendierungen sind nur __direkt__ in Koroutinen möglich</li>
 <li class="fragment">Stackfull: Suspendierungen sind __überall__ möglich</li>
-<li class="fragment">Stackless: Suspendierungen sind nur auf __oberster Ebene__ möglich</li>
 <li class="fragment">Kotlin implementiert __stackless__ Koroutinen</li>
 </ul>
 
@@ -195,6 +200,7 @@ suspend fun createCollage(query: String, count: Int): BufferedImage {
     return newImage
 }
 ```
+<small class="fragment current-only" data-code-focus="4-7"></small>
 <small class="fragment current-only" data-code-focus="2-9"></small>
 <small class="fragment current-only" data-code-focus="3-9"></small>
 <small class="fragment current-only" data-code-focus="6-9"></small>
@@ -224,8 +230,8 @@ fun createCollage(
 ): Any // BufferedImage | COROUTINE_SUSPENDED {
   val cont = CoroutineImpl(parentContinuation) //Implements Continuation
 ```
-<span class="fragment current-only" data-code-focus="6,7"></span>
 <span class="fragment current-only" data-code-focus="8"></span>
+<span class="fragment current-only" data-code-focus="6,7"></span>
 
 ---
 
@@ -245,7 +251,7 @@ fun createCollage(
 
 ---
 
-##### Einstieg und Ausstieg ?
+##### Einstieg und Absprung?
 
 <img src="img/coroutine-builder-lib.png" width="50%">
 
@@ -327,7 +333,7 @@ JerseyClient.pixabay("q=$query&per_page=$count").request()
 
 ---
 
-##### Ausstieg zu asynchronen Libraries
+##### Absprung zu asynchronen Libraries
 
 ```kotlin
 suspendCoroutine<List<String>> { continuation ->
