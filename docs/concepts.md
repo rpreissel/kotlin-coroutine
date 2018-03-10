@@ -150,7 +150,7 @@ suspend fun createCollage(query: String, count: Int): BufferedImage {
 
 ---
 
-##### Koroutinen Entwickler
+##### Einfache asynchrone Sequenzen
 
 <img src="img/twitter-coroutines.png" width="50%">
 
@@ -230,8 +230,8 @@ fun createCollage(
 ): Any // BufferedImage | COROUTINE_SUSPENDED {
   val cont = CoroutineImpl(parentContinuation) //Implements Continuation
 ```
-<span class="fragment current-only" data-code-focus="8"></span>
 <span class="fragment current-only" data-code-focus="6,7"></span>
+<span class="fragment current-only" data-code-focus="8"></span>
 
 ---
 
