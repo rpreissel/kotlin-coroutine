@@ -27,11 +27,17 @@ JavaLand, 2018
 
 <img src="img/utilization.png" width="70%">
 
+Note:
+
+
 ---
 
 ### Entscheidung?
 
 <img src="img/blocking.png" width="60%">
+
+Note:
+3 min
 
 ---
 

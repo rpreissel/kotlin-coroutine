@@ -56,6 +56,12 @@ public interface Continuation<in T> {
 
 ---
 
+##### Koroutinen
+
+<img src="img/coroutine-detail.png" width="50%">
+
+---
+
 ##### Auf das erste Ereignis warten - Select
 
 ```kotlin

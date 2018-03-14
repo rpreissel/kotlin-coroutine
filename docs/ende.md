@@ -7,6 +7,9 @@
  * Stackless: Suspendierungen nur in Koroutinen möglich<br/> [(Red/Blue Code Problem)](http://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/)
  * Tooling / Debugging muss noch verbessert werden   
 
+Note:
+34min
+
 ---
 
 ### Ausblick
@@ -17,6 +20,9 @@ https://github.com/puniverse/quasar
  * Oder durch Project __Loom__:
  http://cr.openjdk.java.net/~rpressler/loom/Loom-Proposal.html
  https://www.youtube.com/watch?v=fpyub8fbrVE
+
+Note:
+36min
 
 ---
 

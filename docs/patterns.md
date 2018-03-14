@@ -47,6 +47,9 @@ suspend fun createCollageAsyncAwait(
 <small class="fragment current-only" data-code-focus="5">Ergebnisse sind Deferred (Futures).</small>
 <small class="fragment current-only" data-code-focus="11">Explizites warten auf die Ergebnisse.</small>
 
+Note:
+22min
+
 ---
 
 ##### Communicating sequential processes / CSP
@@ -141,6 +144,9 @@ launch(Unconfined) {
 <span class="fragment current-only" data-code-focus="1"></span>
 <span class="fragment current-only" data-code-focus="3,4,14,15"></span>
 
+Note:
+26min
+
 ---
 
 ##### Actor
@@ -221,6 +227,9 @@ suspend fun retrieveImages(query: String, channel: SendChannel<BufferedImage>) {
 * Keine Verteilung
 * Vollständigere Actor Implementierung: http://proto.actor
 
+Note:
+29min
+
 ---
 
 ##### Reactive Streams
@@ -280,3 +289,5 @@ suspend fun requestImageUrls(query: String, count: Int = 20): List<String> {
 <small class="fragment current-only" data-code-focus="2-7"></small>
 <small class="fragment current-only" data-code-focus="8">Suspendieren der Koroutine bis ein Ergebnis da ist.</small>
 
+Note:
+32min

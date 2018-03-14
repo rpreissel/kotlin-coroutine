@@ -43,6 +43,9 @@ fun loadOneImage(query: String): CompletableFuture<BufferedImage> {
 <small class="fragment current-only" data-code-focus="1">Funktion liefert ein Future zurück</small>
 <small class="fragment current-only" data-code-focus="3">Funktionale Welt mit Operatoren / Kombinatoren</small>
 
+Note:
+6min
+
 ---
 
 ##### Komplexeres Beispiel - Kollage
@@ -154,6 +157,9 @@ suspend fun createCollage(query: String, count: Int): BufferedImage {
 
 <img src="img/twitter-coroutines.png" width="50%">
 
+Note:
+9min
+
 ---
 
 ##### Koroutinen
@@ -230,7 +236,8 @@ fun createCollage(
 ): Any // BufferedImage | COROUTINE_SUSPENDED {
   val cont = CoroutineImpl(parentContinuation) //Implements Continuation
 ```
-<span class="fragment current-only" data-code-focus="6,7"></span>
+<span class="fragment current-only" data-code-focus="7"></span>
+<span class="fragment current-only" data-code-focus="6"></span>
 <span class="fragment current-only" data-code-focus="8"></span>
 
 ---
@@ -243,11 +250,8 @@ fun createCollage(
 
 <img src="img/continuation-list.png" width="65%">
 
----
-
-##### Koroutinen
-
-<img src="img/coroutine-detail.png" width="50%">
+Note:
+15min
 
 ---
 
@@ -353,3 +357,6 @@ suspendCoroutine<List<String>> { continuation ->
 
 <small class="fragment current-only" data-code-focus="1">Suspendierung vorbereiten und Continuation erhalten.</small>
 <small class="fragment current-only" data-code-focus="6,10">Im Callback die Continuation erneut starten.</small>
+
+Note:
+20min
