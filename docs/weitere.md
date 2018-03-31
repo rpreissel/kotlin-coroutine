@@ -62,30 +62,6 @@ public interface Continuation<in T> {
 
 ---
 
-##### Auf das erste Ereignis warten - Select
-
-```kotlin
-suspend fun loadFastestImage(query: String, count: Int): BufferedImage {
-    val urls = requestImageUrls(query, count)
-    val deferredImages = urls.map {
-        async { requestImageData(it) }
-    }
-    val image: BufferedImage = select {
-        for (deferredImage in deferredImages) {
-            deferredImage.onAwait { image ->
-                image
-            }
-        }
-    }
-    return image
-}
-```
-<small class="fragment current-only" data-code-focus="3-5"></small>
-<small class="fragment current-only" data-code-focus="6">```select``` überwacht mehrere Ereignisse.</small>
-<small class="fragment current-only" data-code-focus="8-10">```onAwait``` anstelle von ```await```</small>
-
----
-
 ##### Producer / Consumer
 
 * Synchronisation von Erzeugern und Verarbeitern

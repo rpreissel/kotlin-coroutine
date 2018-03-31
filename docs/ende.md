@@ -1,14 +1,25 @@
 ### Zusammenfassung
 
- * __```suspend```__ konvertiert Funktionen zu Koroutinen
- * Sequential by Default / Asynchronous explicitly
- * Asynchronen Kommunikationsmustern als Library
- * Einfache Integration in vorhandene asynchrone APIs
- * Stackless: Suspendierungen nur in Koroutinen möglich<br/> [(Red/Blue Code Problem)](http://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/)
- * Tooling / Debugging muss noch verbessert werden   
-
+<ul>
+<li>__```suspend```__ konvertiert Funktionen zu Koroutinen</li>
+<li class="fragment">Sequential by Default / Asynchronous explicitly</li>
+<li class="fragment"> Asynchronen Kommunikationsmustern als Library</li>
+<li class="fragment"> Einfache Integration in vorhandene asynchrone APIs</li>
+<li class="fragment"> Tooling / Debugging muss noch verbessert werden</li>
+<li class="fragment"> Stackless: Suspendierungen nur in Koroutinen möglich<br/> [(Red/Blue Code Problem)](http://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/)</li>
+</ul>
+  
 Note:
 34min
+
+---
+
+<img src="img/red-blue-1.png" width="60%">
+
+
+---
+
+<img src="img/red-blue-2.png" width="60%">
 
 ---
 

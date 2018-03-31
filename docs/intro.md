@@ -1,6 +1,6 @@
 ## Koroutinen mit Kotlin
 
-JavaLand, 2018
+Jax, 24.04.2018, Mainz
 
 [@RenePreissel](https://twitter.com/RenePreissel)
 

@@ -52,6 +52,57 @@ Note:
 
 ---
 
+##### Auf das erste Ereignis warten - Select
+
+```kotlin
+suspend fun loadFastestImage(query: String, count: Int): BufferedImage {
+    val urls = requestImageUrls(query, count)
+    val deferredImages = urls.map {
+        async { requestImageData(it) }
+    }
+    val image: BufferedImage = select {
+        for (deferredImage in deferredImages) {
+            deferredImage.onAwait { image ->
+                image
+            }
+        }
+    }
+    return image
+}
+```
+<small class="fragment current-only" data-code-focus="3-5"></small>
+<small class="fragment current-only" data-code-focus="6">```select``` überwacht mehrere Ereignisse.</small>
+<small class="fragment current-only" data-code-focus="8-10">```onAwait``` anstelle von ```await```</small>
+
+---
+
+##### Timeouts und Selects
+
+```kotlin
+suspend fun loadFastestImage(query: String, count: Int, timeoutMs: Long): BufferedImage {
+    val urls = requestImageUrls(query, count)
+    val deferredImages = urls.map {
+        async { requestImageData(it) }
+    }
+    val image: BufferedImage = select {
+        for (deferredImage in deferredImages) {
+            deferredImage.onAwait { image ->
+                image
+            }
+        }
+
+        onTimeout(timeoutMs) {
+            DEFAULT_IMAGE
+        }
+    }
+    return image
+}
+```
+<span class="fragment current-only" data-code-focus="6,13-15"></span>
+
+
+---
+
 ##### Communicating sequential processes / CSP
 
 <ul>
@@ -238,7 +289,7 @@ Note:
 <li>Nachrichtenbasierend</li>
 <li class="fragment">Asynchron / Nicht-Blockierend</li>
 <li class="fragment">Unterstützung von Back-Pressure</li>
-<li class="fragment">API in Java 9 enthalten</li>
+<li class="fragment">API/SPI seit Java 9 enthalten</li>
 <li class="fragment">Verschiedene Implementierungen: <br/>Reactor, RxJava, Akka Streams</li>
 </ul>
 
@@ -291,3 +342,33 @@ suspend fun requestImageUrls(query: String, count: Int = 20): List<String> {
 
 Note:
 32min
+
+---
+
+##### Generator
+
+<ul>
+<li>Funktion die eine Sequenz von Objekten zurückliefert</li>
+<li class="fragment">Die Funktion liefert mittels <code>yield()</code> das nächste Objekt.</li>
+<li class="fragment">Funktion wird nach dem <code>yield()</code> unterbrochen.</li>
+<li class="fragment">Funktion wird für das nächste Objekt wieder fortgesetzt.</li>
+</ul>
+
+---
+
+##### Generatoren in Kotlin - buildSequence
+
+
+```kotlin
+fun fibonacci(): Sequence<Int> = buildSequence {
+    var terms = Pair(0, 1)
+
+    while(true) {
+        yield(terms.first)
+        terms = Pair(terms.second, terms.first + terms.second)
+    }
+}
+```
+
+<small class="fragment current-only" data-code-focus="1"></small>
+<small class="fragment current-only" data-code-focus="5"></small>
