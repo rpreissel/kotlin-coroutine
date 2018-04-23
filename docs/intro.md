@@ -37,7 +37,7 @@ Note:
 <img src="img/blocking.png" width="60%">
 
 Note:
-3 min
+4 min
 
 ---
 

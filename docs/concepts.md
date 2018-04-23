@@ -44,7 +44,7 @@ fun loadOneImage(query: String): CompletableFuture<BufferedImage> {
 <small class="fragment current-only" data-code-focus="3">Funktionale Welt mit Operatoren / Kombinatoren</small>
 
 Note:
-6min
+8min
 
 ---
 
@@ -150,6 +150,7 @@ suspend fun requestImageData(imageUrl: String): BufferedImage</code></pre>
 
 <small class="fragment current-only" data-code-focus="2,3" data-fragment-index="1"></small>  
 <small class="fragment current-only" data-code-focus="1" data-fragment-index="2">__suspend__ macht den Unterschied</small>  
+<small class="fragment current-only" data-code-focus="2,3" data-fragment-index="4"></small>  
 
 ---
 
@@ -158,7 +159,7 @@ suspend fun requestImageData(imageUrl: String): BufferedImage</code></pre>
 <img src="img/twitter-coroutines.png" width="50%">
 
 Note:
-9min
+12min
 
 ---
 
@@ -172,13 +173,13 @@ Note:
 
 ##### Funktionen / Routinen
 
-<img src="img/routine.png" width="50%">
+<img src="img/routine.png" width="45%">
 
 ---
 
 ##### Koroutinen
 
-<img src="img/coroutine.png" width="50%">
+<img src="img/coroutine.png" width="45%">
 
 ---
 
@@ -207,9 +208,9 @@ suspend fun createCollage(query: String, count: Int): BufferedImage {
 }
 ```
 <small class="fragment current-only" data-code-focus="4-7"></small>
-<small class="fragment current-only" data-code-focus="2-9"></small>
-<small class="fragment current-only" data-code-focus="3-9"></small>
-<small class="fragment current-only" data-code-focus="6-9"></small>
+<small class="fragment current-only" data-code-focus="2"></small>
+<small class="fragment current-only" data-code-focus="3"></small>
+<small class="fragment current-only" data-code-focus="6"></small>
 
 ---
 
@@ -219,7 +220,6 @@ suspend fun createCollage(query: String, count: Int): BufferedImage {
 
 ##### Kotlin Compiler
 
-Aus:
 
 ```kotlin
 suspend fun createCollage(
@@ -227,8 +227,9 @@ suspend fun createCollage(
 ): BufferedImage
 ```
 
-wird:
-
+<div class="fragment" data-fragment-index="1">
+<br/>
+<small>Wird compiliert zu:</small>
 ```kotlin
 fun createCollage(
     query: String, count: Int,
@@ -236,9 +237,10 @@ fun createCollage(
 ): Any // BufferedImage | COROUTINE_SUSPENDED {
   val cont = CoroutineImpl(parentContinuation) //Implements Continuation
 ```
-<span class="fragment current-only" data-code-focus="7"></span>
-<span class="fragment current-only" data-code-focus="6"></span>
-<span class="fragment current-only" data-code-focus="8"></span>
+</div>
+<span class="fragment current-only" data-code-focus="3,7" data-fragment-index="2"></span>
+<span class="fragment current-only" data-code-focus="6" data-fragment-index="3"></span>
+<span class="fragment current-only" data-code-focus="8" data-fragment-index="4"></span>
 
 ---
 
@@ -251,7 +253,7 @@ fun createCollage(
 <img src="img/continuation-list.png" width="65%">
 
 Note:
-15min
+20min
 
 ---
 
@@ -359,4 +361,4 @@ suspendCoroutine<List<String>> { continuation ->
 <small class="fragment current-only" data-code-focus="6,10">Im Callback die Continuation erneut starten.</small>
 
 Note:
-20min
+27min

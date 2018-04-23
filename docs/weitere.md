@@ -138,4 +138,30 @@ fun createCollageAsMono(
 <small class="fragment current-only" data-code-focus="1,3"></small>
 <small class="fragment current-only" data-code-focus="4,5">Das Mono ist erst vollständig wenn die Koroutine fertig ist.</small>
 
+---
+
+##### Timeouts und Selects
+
+```kotlin
+suspend fun loadFastestImage(query: String, count: Int, timeoutMs: Long): BufferedImage {
+    val urls = requestImageUrls(query, count)
+    val deferredImages = urls.map {
+        async { requestImageData(it) }
+    }
+    val image: BufferedImage = select {
+        for (deferredImage in deferredImages) {
+            deferredImage.onAwait { image ->
+                image
+            }
+        }
+
+        onTimeout(timeoutMs) {
+            DEFAULT_IMAGE
+        }
+    }
+    return image
+}
+```
+<span class="fragment current-only" data-code-focus="6,13-15"></span>
+
 

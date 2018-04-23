@@ -48,7 +48,7 @@ suspend fun createCollageAsyncAwait(
 <small class="fragment current-only" data-code-focus="11">Explizites warten auf die Ergebnisse.</small>
 
 Note:
-22min
+30min
 
 ---
 
@@ -74,32 +74,8 @@ suspend fun loadFastestImage(query: String, count: Int): BufferedImage {
 <small class="fragment current-only" data-code-focus="6">```select``` überwacht mehrere Ereignisse.</small>
 <small class="fragment current-only" data-code-focus="8-10">```onAwait``` anstelle von ```await```</small>
 
----
-
-##### Timeouts und Selects
-
-```kotlin
-suspend fun loadFastestImage(query: String, count: Int, timeoutMs: Long): BufferedImage {
-    val urls = requestImageUrls(query, count)
-    val deferredImages = urls.map {
-        async { requestImageData(it) }
-    }
-    val image: BufferedImage = select {
-        for (deferredImage in deferredImages) {
-            deferredImage.onAwait { image ->
-                image
-            }
-        }
-
-        onTimeout(timeoutMs) {
-            DEFAULT_IMAGE
-        }
-    }
-    return image
-}
-```
-<span class="fragment current-only" data-code-focus="6,13-15"></span>
-
+Note:
+31min
 
 ---
 
@@ -196,7 +172,7 @@ launch(Unconfined) {
 <span class="fragment current-only" data-code-focus="3,4,14,15"></span>
 
 Note:
-26min
+37min
 
 ---
 
@@ -212,24 +188,14 @@ Note:
 
 ---
 
-##### Actor - Nachrichten
+##### Actor - Nachrichten empfangen
 
 ```kotlin
-sealed class PixabayMsg
 data class RequestImageUrlMsg(
     val query: String,
     val resultChannel: SendChannel<String>
 ) : PixabayMsg()
-```
-<small class="fragment current-only" data-code-focus="1">```Sealed``` Klassen können nur Subklassen in der selben Datei definieren (ADT).</small>
-<small class="fragment current-only" data-code-focus="2-5">Für Antworten muss ein eigener Channel übergeben werden.</small>
 
-
----
-
-##### Actor - Verhalten
-
-```kotlin
 val PixabayActor: SendChannel<PixabayMsg> = actor<PixabayMsg> {
     for (msg in channel) {
         when (msg) {
@@ -242,15 +208,16 @@ val PixabayActor: SendChannel<PixabayMsg> = actor<PixabayMsg> {
 }
 ```
 
-<small class="fragment current-only" data-code-focus="1">Ein Aktor ist nur ein Channel.</small>
-<small class="fragment current-only" data-code-focus="2"></small>
-<small class="fragment current-only" data-code-focus="3-7"></small>
-<small class="fragment current-only" data-code-focus="4-6">Das Ergebnis wird an den Result-Channel geschickt.</small>
-<small class="fragment current-only" data-code-focus="8"></small>
+<small class="fragment current-only" data-code-focus="6">Ein Aktor ist nur ein Channel.</small>
+<small class="fragment current-only" data-code-focus="7"></small>
+<small class="fragment current-only" data-code-focus="8-12"></small>
+<small class="fragment current-only" data-code-focus="1-4,9"></small>
+<small class="fragment current-only" data-code-focus="10">Das Ergebnis wird an den Result-Channel geschickt.</small>
+<small class="fragment current-only" data-code-focus="13"></small>
 
 ---
 
-##### Actor - Benutzen
+##### Actor - Nachrichten senden
 
 ```kotlin
 suspend fun retrieveImages(query: String, channel: SendChannel<BufferedImage>) {
@@ -279,7 +246,7 @@ suspend fun retrieveImages(query: String, channel: SendChannel<BufferedImage>) {
 * Vollständigere Actor Implementierung: http://proto.actor
 
 Note:
-29min
+41min
 
 ---
 
@@ -319,7 +286,7 @@ fun retrieveImagesAsFlux(
 }
 ```
 <small class="fragment current-only" data-code-focus="1,4"></small>
-<small class="fragment current-only" data-code-focus="7-10">Der ```Flux``` wird suspendiert, wenn niemand die Nachrichten abholt.</small>
+<small class="fragment current-only" data-code-focus="7-10">Der ```Flux``` wird suspendiert, wenn niemand die Nachrichten abholt (**Back-Pressure**).</small>
 
 ---
 
@@ -341,7 +308,7 @@ suspend fun requestImageUrls(query: String, count: Int = 20): List<String> {
 <small class="fragment current-only" data-code-focus="8">Suspendieren der Koroutine bis ein Ergebnis da ist.</small>
 
 Note:
-32min
+44min
 
 ---
 
@@ -372,3 +339,6 @@ fun fibonacci(): Sequence<Int> = buildSequence {
 
 <small class="fragment current-only" data-code-focus="1"></small>
 <small class="fragment current-only" data-code-focus="5"></small>
+
+Note:
+46min

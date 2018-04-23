@@ -8,18 +8,22 @@
 <li class="fragment"> Tooling / Debugging muss noch verbessert werden</li>
 <li class="fragment"> Stackless: Suspendierungen nur in Koroutinen möglich<br/> [(Red/Blue Code Problem)](http://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/)</li>
 </ul>
+
+---
+
+#### Alles Routinen
   
+<img src="img/red-blue-1.png" width="40%">
+
+
+---
+
+#### C() wird zur Koroutine
+
+<img src="img/red-blue-2.png" width="40%">
+
 Note:
-34min
-
----
-
-<img src="img/red-blue-1.png" width="60%">
-
-
----
-
-<img src="img/red-blue-2.png" width="60%">
+48min
 
 ---
 
@@ -33,7 +37,7 @@ https://github.com/puniverse/quasar
  https://www.youtube.com/watch?v=fpyub8fbrVE
 
 Note:
-36min
+50min
 
 ---
 
