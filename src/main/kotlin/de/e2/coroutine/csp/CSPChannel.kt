@@ -3,7 +3,7 @@ package de.e2.coroutine.csp.channel
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
 import de.e2.coroutine.combineImages
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.SendChannel
@@ -15,7 +15,6 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
-import javax.ws.rs.ClientErrorException
 import javax.ws.rs.client.InvocationCallback
 import javax.ws.rs.core.MediaType
 import kotlin.coroutines.experimental.suspendCoroutine
@@ -25,15 +24,15 @@ import kotlinx.coroutines.experimental.swing.Swing as UI
 fun main(args: Array<String>): Unit = runBlocking {
     JerseyClient.use {
         val channel = Channel<BufferedImage>()
-        launch(Unconfined) {
+        launch(Dispatchers.Unconfined) {
             retrieveImages("dogs", channel)
         }
 
-        launch(Unconfined) {
+        launch(Dispatchers.Unconfined) {
             retrieveImages("cats", channel)
         }
 
-        launch(Unconfined) {
+        launch(Dispatchers.Unconfined) {
             createCollage(channel, 4)
         }
         delay(1, TimeUnit.HOURS)

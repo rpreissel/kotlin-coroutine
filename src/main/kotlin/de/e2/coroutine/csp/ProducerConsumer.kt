@@ -2,14 +2,16 @@ package de.e2.coroutine.csp.producer
 
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
+import de.e2.coroutine.collage.reactive.requestImageData
 import de.e2.coroutine.combineImages
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.produce
+import kotlinx.coroutines.experimental.currentScope
 import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.isActive
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
-import kotlinx.coroutines.experimental.selects.select
 import kotlinx.coroutines.experimental.selects.selectUnbiased
 import java.awt.image.BufferedImage
 import java.io.FileOutputStream
@@ -27,9 +29,9 @@ fun main(args: Array<String>): Unit = runBlocking {
         val dogsChannel = retrieveImages("dogs")
         val catsChannel = retrieveImages("cats")
 
-        launch(Unconfined) {
+        launch(Dispatchers.Unconfined) {
             var imageId = 0
-            while(isActive) {
+            while (isActive) {
                 val collage = createCollage(4, catsChannel, dogsChannel)
                 ImageIO.write(collage, "png", FileOutputStream("image-${imageId++}.png"))
             }
@@ -54,15 +56,17 @@ suspend fun createCollage(
 
 suspend fun retrieveImages(
     query: String
-): ReceiveChannel<BufferedImage> = produce {
-    while (isActive) {
-        try {
-            val url = requestImageUrl(query)
-            val image = requestImageData(url)
-            send(image)
-            delay(2, TimeUnit.SECONDS)
-        } catch (exc: Exception) {
-            delay(1, TimeUnit.SECONDS)
+): ReceiveChannel<BufferedImage> = currentScope {
+    produce {
+        while (isActive) {
+            try {
+                val url = requestImageUrl(query)
+                val image = requestImageData(url)
+                send(image)
+                delay(2, TimeUnit.SECONDS)
+            } catch (exc: Exception) {
+                delay(1, TimeUnit.SECONDS)
+            }
         }
     }
 }

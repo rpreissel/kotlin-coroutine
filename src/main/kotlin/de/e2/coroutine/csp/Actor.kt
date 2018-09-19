@@ -3,15 +3,15 @@ package de.e2.coroutine.csp.actor
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
 import de.e2.coroutine.combineImages
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.experimental.CompletableDeferred
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.SendChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.reactive.openSubscription
-import kotlinx.coroutines.experimental.reactive.publish
 import kotlinx.coroutines.experimental.runBlocking
 import java.awt.image.BufferedImage
 import java.io.FileOutputStream
@@ -27,15 +27,15 @@ import kotlinx.coroutines.experimental.swing.Swing as UI
 fun main(args: Array<String>): Unit = runBlocking {
     JerseyClient.use {
         val channel = Channel<BufferedImage>()
-        launch(Unconfined) {
+        launch(Dispatchers.Unconfined) {
             retrieveImages("dogs", channel)
         }
 
-        launch(Unconfined) {
+        launch(Dispatchers.Unconfined) {
             retrieveImages("cats", channel)
         }
 
-        launch(Unconfined) {
+        launch(Dispatchers.Unconfined) {
             createCollage(channel, 4)
         }
         delay(1, TimeUnit.HOURS)
@@ -45,15 +45,15 @@ fun main(args: Array<String>): Unit = runBlocking {
 sealed class PixabayMsg
 data class RequestImageUrlMsg(
     val query: String,
-    val resultChannel: SendChannel<String>
+    val result: CompletableDeferred<String>
 ) : PixabayMsg()
 
 
-val PixabayActor: SendChannel<PixabayMsg> = actor<PixabayMsg> {
+val PixabayActor: SendChannel<PixabayMsg> = GlobalScope.actor<PixabayMsg> {
     for (msg in channel) {
         when (msg) {
             is RequestImageUrlMsg -> msg.apply {
-                resultChannel.send(requestImageUrl(query))
+                result.complete(requestImageUrl(query))
             }
         }
         delay(100)
@@ -72,11 +72,11 @@ suspend fun createCollage(channel: ReceiveChannel<BufferedImage>, count: Int) {
 }
 
 suspend fun retrieveImages(query: String, channel: SendChannel<BufferedImage>) {
-    val resultChannel = Channel<String>(1)
-    val requestImageUrlMsg = RequestImageUrlMsg(query, resultChannel)
+    val result = CompletableDeferred<String>()
+    val requestImageUrlMsg = RequestImageUrlMsg(query, result)
     while (true) {
         PixabayActor.send(requestImageUrlMsg)
-        val url = resultChannel.receive()
+        val url = result.await()
         val image = requestImageData(url)
         channel.send(image)
         delay(2, TimeUnit.SECONDS)

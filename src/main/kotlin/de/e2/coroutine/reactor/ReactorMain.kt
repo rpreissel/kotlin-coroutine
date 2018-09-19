@@ -2,9 +2,13 @@ package de.e2.coroutine.reactor
 
 import de.e2.coroutine.collage.reactive.requestImageData
 import de.e2.coroutine.collage.reactive.requestImageUrls
+import kotlinx.coroutines.experimental.CoroutineScope
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.isActive
 import kotlinx.coroutines.experimental.reactor.flux
 import kotlinx.coroutines.experimental.reactor.mono
 import org.springframework.boot.SpringApplication
@@ -20,6 +24,7 @@ import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import javax.annotation.PreDestroy
 import javax.imageio.ImageIO
 import kotlin.coroutines.experimental.CoroutineContext
 import de.e2.coroutine.collage.reactive.createCollage as createCollageReactive
@@ -27,7 +32,16 @@ import de.e2.coroutine.csp.producer.createCollage as createCollageProducer
 
 
 @SpringBootApplication
-class ReactorApplication {
+class ReactorApplication : CoroutineScope{
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Default
+
+    @PreDestroy
+    fun destroy() {
+        job.cancel()
+    }
 
     @Bean
     fun router() = router {

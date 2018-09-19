@@ -3,7 +3,9 @@ package de.e2.coroutine.collage.reactive
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.ReactorClient
 import de.e2.coroutine.combineImages
+import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.isActive
 import kotlinx.coroutines.experimental.reactive.awaitSingle
 import kotlinx.coroutines.experimental.reactor.flux
 import kotlinx.coroutines.experimental.reactor.mono
@@ -38,8 +40,8 @@ suspend fun createCollage(
 }
 
 fun createCollageAsMono(
-    query: String, count: Int
-): Mono<BufferedImage> = mono {
+    scope: CoroutineScope, query: String, count: Int
+): Mono<BufferedImage> = scope.mono {
     val urls = requestImageUrls(query, count)
     val images = urls.map { requestImageData(it) }
     val newImage = combineImages(images)
@@ -47,9 +49,10 @@ fun createCollageAsMono(
 }
 
 fun retrieveImagesAsFlux(
+    scope: CoroutineScope,
     query: String,
     batchSize: Int
-): Flux<BufferedImage> = flux {
+): Flux<BufferedImage> = scope.flux {
     while (isActive) {
         val urls = requestImageUrls(query, batchSize)
         for (url in urls) {

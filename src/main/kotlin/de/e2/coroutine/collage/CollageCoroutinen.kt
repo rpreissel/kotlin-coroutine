@@ -4,9 +4,11 @@ import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
 import de.e2.coroutine.Timer
 import de.e2.coroutine.combineImages
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.coroutineScope
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 import kotlinx.coroutines.experimental.runBlocking
@@ -41,7 +43,7 @@ fun builderExamples() {
     }
 
     //Startet die Koroutine und setzt den aktuellen Thread fort
-    val job = launch {
+    val job = GlobalScope.launch {
         val collage = createCollage("dogs", 20)
         ImageIO.write(collage, "png", FileOutputStream("dogs.png"))
     }
@@ -53,17 +55,17 @@ fun builderExamples() {
 
 fun builderExamplesWithContext() {
     //Den Fork-Join-Pool für die Koroutine nutzen
-    val collage = runBlocking(CommonPool) {
+    val collage = runBlocking(Dispatchers.Default) {
         createCollage("dogs", 20)
     }
 
     //Einen eigenen Thread-Pool für die Koroutine nutzen
     val fixedThreadPoolContext = newFixedThreadPoolContext(1, "collage")
-    val job = launch(fixedThreadPoolContext) {
+    val job = GlobalScope.launch(fixedThreadPoolContext) {
         val collage = createCollage("dogs", 20)
 
         // Wechsel in den UI-Thread und zurück
-        withContext(UI) {
+        withContext(Dispatchers.UI) {
             ImageIO.write(collage, "png", FileOutputStream("dogs.png"))
         }
     }
@@ -91,7 +93,7 @@ suspend fun createCollageForLoop(query: String, count: Int): BufferedImage {
 
 private suspend fun createCollageAsyncAwait(
     query: String, count: Int
-): BufferedImage {
+): BufferedImage = coroutineScope {
     val urls = requestImageUrls(query, count)
     val deferredImages: List<Deferred<BufferedImage>> = urls.map {
         async {
@@ -102,10 +104,10 @@ private suspend fun createCollageAsyncAwait(
     val images: List<BufferedImage> = deferredImages.map { it.await() }
 
     val newImage = combineImages(images)
-    return newImage
+    newImage
 }
 
-suspend fun loadFastImages(urls: List<String>, timeoutMs: Long): List<BufferedImage> {
+suspend fun loadFastImages(urls: List<String>, timeoutMs: Long): List<BufferedImage> = coroutineScope {
     val timer = Timer(timeoutMs)
     val result = mutableListOf<BufferedImage>()
     val deferredImages = urls.map {
@@ -126,8 +128,8 @@ suspend fun loadFastImages(urls: List<String>, timeoutMs: Long): List<BufferedIm
         }
 
     }
-
-    return result
+    imagesToRetrieve.forEach { it.cancel() }
+    result
 }
 
 private suspend fun requestImageUrls(

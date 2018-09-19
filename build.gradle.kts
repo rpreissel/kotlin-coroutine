@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.Coroutines
 
-val kotlinCoroutineVersion: String by extra { "0.22.5" }
+val kotlinCoroutineVersion: String by extra { "0.26.0" }
 
 buildscript {
     repositories {
@@ -19,7 +19,7 @@ apply {
 }
 
 plugins {
-    val kotlinVersion = "1.2.30"
+    val kotlinVersion = "1.2.70"
     application
 
     id("org.jetbrains.kotlin.jvm") version kotlinVersion

@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletableFuture.*
+import java.util.concurrent.CompletableFuture.completedFuture
 import javax.imageio.ImageIO
 import javax.ws.rs.client.InvocationCallback
 import javax.ws.rs.core.MediaType

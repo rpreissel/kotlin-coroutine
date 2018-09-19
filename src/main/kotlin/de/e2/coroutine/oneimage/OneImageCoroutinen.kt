@@ -3,9 +3,9 @@ package de.e2.coroutine.oneimage.coroutine
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.coroutineScope
 import kotlinx.coroutines.experimental.runBlocking
 import kotlinx.coroutines.experimental.selects.select
-import kotlinx.coroutines.experimental.withTimeoutOrNull
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import javax.imageio.ImageIO
@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType
 import kotlin.coroutines.experimental.suspendCoroutine
 import kotlinx.coroutines.experimental.swing.Swing as UI
 
-val DEFAULT_IMAGE: BufferedImage = BufferedImage(1,1,BufferedImage.TYPE_3BYTE_BGR)
+val DEFAULT_IMAGE: BufferedImage = BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR)
 
 fun main(args: Array<String>): Unit = runBlocking {
     JerseyClient.use {
@@ -42,7 +42,7 @@ suspend fun loadOneImage(query: String): BufferedImage {
 }
 
 
-suspend fun loadFastestImage(query: String, count: Int): BufferedImage {
+suspend fun loadFastestImage(query: String, count: Int): BufferedImage = coroutineScope {
     val urls = requestImageUrls(query, count)
     val deferredImages = urls.map {
         async { requestImageData(it) }
@@ -54,10 +54,11 @@ suspend fun loadFastestImage(query: String, count: Int): BufferedImage {
             }
         }
     }
-    return image
+    deferredImages.forEach { it.cancel() }
+    image
 }
 
-suspend fun loadFastestImage(query: String, count: Int, timeoutMs: Long): BufferedImage {
+suspend fun loadFastestImage(query: String, count: Int, timeoutMs: Long): BufferedImage = coroutineScope {
     val urls = requestImageUrls(query, count)
     val deferredImages = urls.map {
         async { requestImageData(it) }
@@ -73,9 +74,10 @@ suspend fun loadFastestImage(query: String, count: Int, timeoutMs: Long): Buffer
             DEFAULT_IMAGE
         }
     }
-    return image
-}
 
+    deferredImages.forEach { it.cancel() }
+    image
+}
 
 
 private suspend fun requestImageUrls(query: String, count: Int = 20) = suspendCoroutine<List<String>> { cont ->

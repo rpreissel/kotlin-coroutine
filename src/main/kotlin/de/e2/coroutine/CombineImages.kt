@@ -2,8 +2,6 @@ package de.e2.coroutine
 
 import java.awt.Color
 import java.awt.image.BufferedImage
-import java.io.OutputStream
-import javax.imageio.ImageIO
 
 fun combineImages(imageList: Collection<BufferedImage>): BufferedImage {
     if(imageList.isEmpty()) {
