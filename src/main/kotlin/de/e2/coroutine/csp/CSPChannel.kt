@@ -24,18 +24,24 @@ import kotlinx.coroutines.experimental.swing.Swing as UI
 fun main(args: Array<String>): Unit = runBlocking {
     JerseyClient.use {
         val channel = Channel<BufferedImage>()
-        launch(Dispatchers.Unconfined) {
+        val dogsJob = launch(Dispatchers.Unconfined) {
             retrieveImages("dogs", channel)
         }
 
-        launch(Dispatchers.Unconfined) {
+        val catsJob = launch(Dispatchers.Unconfined) {
             retrieveImages("cats", channel)
         }
 
-        launch(Dispatchers.Unconfined) {
+        val collageJob = launch(Dispatchers.Unconfined) {
             createCollage(channel, 4)
         }
         delay(1, TimeUnit.HOURS)
+
+        dogsJob.cancel()
+        catsJob.cancel()
+        collageJob.cancel()
+
+        Unit
     }
 }
 

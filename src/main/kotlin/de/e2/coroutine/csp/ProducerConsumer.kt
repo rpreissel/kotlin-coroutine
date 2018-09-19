@@ -29,7 +29,7 @@ fun main(args: Array<String>): Unit = runBlocking {
         val dogsChannel = retrieveImages("dogs")
         val catsChannel = retrieveImages("cats")
 
-        launch(Dispatchers.Unconfined) {
+        val collageJob = launch(Dispatchers.Unconfined) {
             var imageId = 0
             while (isActive) {
                 val collage = createCollage(4, catsChannel, dogsChannel)
@@ -37,6 +37,12 @@ fun main(args: Array<String>): Unit = runBlocking {
             }
         }
         delay(1, TimeUnit.HOURS)
+
+        dogsChannel.cancel()
+        catsChannel.cancel()
+        collageJob.cancel()
+
+        Unit
     }
 }
 
