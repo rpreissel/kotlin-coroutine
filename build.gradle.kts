@@ -1,7 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.Coroutines
+import java.net.URI
 
-val kotlinCoroutineVersion: String by extra { "0.26.0" }
+val kotlinCoroutineVersion: String by extra { "0.26.1-eap13" }
 
 buildscript {
     repositories {
@@ -19,7 +20,7 @@ apply {
 }
 
 plugins {
-    val kotlinVersion = "1.2.70"
+    val kotlinVersion = "1.3.0-rc-57"
     application
 
     id("org.jetbrains.kotlin.jvm") version kotlinVersion
@@ -35,6 +36,8 @@ version = "1.0.0-SNAPSHOT"
 repositories {
     mavenCentral()
     maven("http://repo.spring.io/milestone")
+    maven { url = URI("http://dl.bintray.com/kotlin/kotlin-eap") }
+    maven { url = URI("https://dl.bintray.com/kotlin/kotlinx") }
 }
 
 dependencies {
@@ -58,10 +61,6 @@ dependencies {
     testCompile("io.projectreactor:reactor-test")
 }
 
-kotlin {
-    experimental.coroutines = Coroutines.ENABLE
-}
-
 application {
     mainClassName = "de.e2.coroutine.reactor.ReactorApplication"
 }
@@ -71,4 +70,6 @@ configure<JavaPluginConvention> {
 }
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.apiVersion = "1.3"
+    kotlinOptions.languageVersion = "1.3"
 }

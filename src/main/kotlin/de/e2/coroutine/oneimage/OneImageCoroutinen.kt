@@ -2,17 +2,19 @@ package de.e2.coroutine.oneimage.coroutine
 
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.coroutineScope
-import kotlinx.coroutines.experimental.runBlocking
-import kotlinx.coroutines.experimental.selects.select
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.select
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import javax.imageio.ImageIO
 import javax.ws.rs.client.InvocationCallback
 import javax.ws.rs.core.MediaType
-import kotlin.coroutines.experimental.suspendCoroutine
-import kotlinx.coroutines.experimental.swing.Swing as UI
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.swing.Swing as UI
 
 val DEFAULT_IMAGE: BufferedImage = BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR)
 

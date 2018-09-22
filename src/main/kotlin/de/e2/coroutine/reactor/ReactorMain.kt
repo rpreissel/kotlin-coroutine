@@ -2,15 +2,15 @@ package de.e2.coroutine.reactor
 
 import de.e2.coroutine.collage.reactive.requestImageData
 import de.e2.coroutine.collage.reactive.requestImageUrls
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.produce
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.isActive
-import kotlinx.coroutines.experimental.reactor.flux
-import kotlinx.coroutines.experimental.reactor.mono
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.reactor.flux
+import kotlinx.coroutines.reactor.mono
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
@@ -26,7 +26,7 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.annotation.PreDestroy
 import javax.imageio.ImageIO
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 import de.e2.coroutine.collage.reactive.createCollage as createCollageReactive
 import de.e2.coroutine.csp.producer.createCollage as createCollageProducer
 

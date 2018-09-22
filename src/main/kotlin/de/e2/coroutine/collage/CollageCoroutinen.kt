@@ -4,24 +4,27 @@ import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
 import de.e2.coroutine.Timer
 import de.e2.coroutine.combineImages
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.coroutineScope
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.newFixedThreadPoolContext
-import kotlinx.coroutines.experimental.runBlocking
-import kotlinx.coroutines.experimental.selects.select
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newFixedThreadPoolContext
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.select
+import kotlinx.coroutines.withContext
 import java.awt.image.BufferedImage
 import java.io.FileOutputStream
 import java.io.InputStream
 import javax.imageio.ImageIO
 import javax.ws.rs.client.InvocationCallback
 import javax.ws.rs.core.MediaType
-import kotlin.coroutines.experimental.suspendCoroutine
-import kotlinx.coroutines.experimental.swing.Swing as UI
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.swing.Swing as UI
 
 
 fun main(args: Array<String>): Unit = runBlocking {
@@ -101,7 +104,7 @@ private suspend fun createCollageAsyncAwait(
         }
     }
 
-    val images: List<BufferedImage> = deferredImages.map { it.await() }
+    val images: List<BufferedImage> = deferredImages.awaitAll()
 
     val newImage = combineImages(images)
     newImage

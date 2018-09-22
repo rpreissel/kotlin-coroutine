@@ -3,16 +3,16 @@ package de.e2.coroutine.csp.actor
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
 import de.e2.coroutine.combineImages
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.SendChannel
-import kotlinx.coroutines.experimental.channels.actor
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.awt.image.BufferedImage
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -20,8 +20,10 @@ import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
 import javax.ws.rs.client.InvocationCallback
 import javax.ws.rs.core.MediaType
-import kotlin.coroutines.experimental.suspendCoroutine
-import kotlinx.coroutines.experimental.swing.Swing as UI
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.swing.Swing as UI
 
 
 fun main(args: Array<String>): Unit = runBlocking {

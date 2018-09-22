@@ -1,8 +1,7 @@
 package de.e2.coroutine.generator
 
-import kotlin.coroutines.experimental.buildSequence
 
-fun fibonacci(): Sequence<Int> = buildSequence {
+fun fibonacci(): Sequence<Int> = sequence {
     var terms = Pair(0, 1)
 
     while(true) {
@@ -11,6 +10,6 @@ fun fibonacci(): Sequence<Int> = buildSequence {
     }
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println(fibonacci().take(10).toList())
 }

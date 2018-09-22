@@ -3,13 +3,13 @@ package de.e2.coroutine.collage.reactive
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.ReactorClient
 import de.e2.coroutine.combineImages
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.isActive
-import kotlinx.coroutines.experimental.reactive.awaitSingle
-import kotlinx.coroutines.experimental.reactor.flux
-import kotlinx.coroutines.experimental.reactor.mono
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.reactive.awaitSingle
+import kotlinx.coroutines.reactor.flux
+import kotlinx.coroutines.reactor.mono
+import kotlinx.coroutines.runBlocking
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -19,7 +19,7 @@ import java.awt.image.BufferedImage
 import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
-import kotlinx.coroutines.experimental.swing.Swing as UI
+import kotlinx.coroutines.swing.Swing as UI
 
 
 fun main(args: Array<String>): Unit = runBlocking {
