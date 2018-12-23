@@ -1,9 +1,11 @@
+@file:UseExperimental(ExperimentalCoroutinesApi::class)
 package de.e2.coroutine.reactor
 
 import de.e2.coroutine.collage.reactive.requestImageData
 import de.e2.coroutine.collage.reactive.requestImageUrls
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
@@ -32,12 +34,13 @@ import de.e2.coroutine.csp.producer.createCollage as createCollageProducer
 
 
 @SpringBootApplication
-class ReactorApplication : CoroutineScope{
+class ReactorApplication : CoroutineScope {
     private val job = Job()
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Default
 
+    @Suppress("unused")
     @PreDestroy
     fun destroy() {
         job.cancel()
@@ -78,12 +81,12 @@ class ReactorApplication : CoroutineScope{
             }
         }
 
-        GET("/event") { _ ->
+        GET("/event") {
             val clientId = UUID.randomUUID().toString()
             val flux = flux {
-                val dogs = retrieveImages("dog", coroutineContext);
-                val cats = retrieveImages("cat", coroutineContext);
-                val turtle = retrieveImages("turtle", coroutineContext);
+                val dogs = retrieveImages("dog");
+                val cats = retrieveImages("cat");
+                val turtle = retrieveImages("turtle");
                 while (isActive) {
                     val collage = createCollageProducer(20, dogs, cats, turtle)
                     val byteArrayResource = ByteArrayOutputStream()
@@ -104,10 +107,9 @@ class ReactorApplication : CoroutineScope{
 
     }
 
-    suspend fun retrieveImages(
-        query: String,
-        context: CoroutineContext
-    ): ReceiveChannel<BufferedImage> = produce(context) {
+    suspend fun CoroutineScope.retrieveImages(
+        query: String
+    ): ReceiveChannel<BufferedImage> = produce {
         while (isActive) {
             val urls = requestImageUrls(query, 20)
             for (url in urls) {

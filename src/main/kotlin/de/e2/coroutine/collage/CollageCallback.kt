@@ -1,3 +1,5 @@
+@file:Suppress("PackageDirectoryMismatch")
+
 package de.e2.coroutine.collage.callback
 
 import com.jayway.jsonpath.JsonPath
@@ -45,8 +47,8 @@ private fun requestImageUrls(
     count: Int = 20,
     onFailure: OnFailure = {},
     onSuccess: OnSuccess<List<String>>
-): Unit {
-    val json = JerseyClient.pixabay("q=$query&per_page=$count")
+) {
+    JerseyClient.pixabay("q=$query&per_page=$count")
         .request()
         .async()
         .get(object : InvocationCallback<String> {
@@ -65,7 +67,7 @@ private fun requestImageData(
     imageUrl: String,
     onFailure: OnFailure = {},
     onSuccess: OnSuccess<BufferedImage>
-): Unit {
+) {
     JerseyClient.url(imageUrl)
         .request(MediaType.APPLICATION_OCTET_STREAM)
         .async()

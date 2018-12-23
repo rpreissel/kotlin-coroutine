@@ -1,3 +1,5 @@
+@file:Suppress("PackageDirectoryMismatch")
+
 package de.e2.coroutine.collage.future
 
 import com.jayway.jsonpath.JsonPath
@@ -35,7 +37,7 @@ fun createCollage(query: String, count: Int): CompletableFuture<BufferedImage> {
 }
 
 private fun requestImageUrls(query: String, count: Int) = CompletableFuture<List<String>>().also { future ->
-    val json = JerseyClient.pixabay("q=$query&per_page=$count")
+    JerseyClient.pixabay("q=$query&per_page=$count")
         .request()
         .async()
         .get(object : InvocationCallback<String> {

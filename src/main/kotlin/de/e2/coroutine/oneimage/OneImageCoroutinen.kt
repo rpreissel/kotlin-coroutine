@@ -1,10 +1,12 @@
+@file:Suppress("PackageDirectoryMismatch")
+@file:UseExperimental(ExperimentalCoroutinesApi::class)
 package de.e2.coroutine.oneimage.coroutine
 
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import java.awt.image.BufferedImage
 import java.io.InputStream
@@ -18,7 +20,7 @@ import kotlinx.coroutines.swing.Swing as UI
 
 val DEFAULT_IMAGE: BufferedImage = BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR)
 
-fun main(args: Array<String>): Unit = runBlocking {
+suspend fun main(): Unit = coroutineScope {
     JerseyClient.use {
         val image = loadOneImage("dogs")
         println("${image.width}x${image.height}")
@@ -60,6 +62,7 @@ suspend fun loadFastestImage(query: String, count: Int): BufferedImage = corouti
     image
 }
 
+@Suppress("unused")
 suspend fun loadFastestImage(query: String, count: Int, timeoutMs: Long): BufferedImage = coroutineScope {
     val urls = requestImageUrls(query, count)
     val deferredImages = urls.map {

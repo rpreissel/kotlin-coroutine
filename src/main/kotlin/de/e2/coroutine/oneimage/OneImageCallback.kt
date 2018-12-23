@@ -1,3 +1,5 @@
+@file:Suppress("PackageDirectoryMismatch")
+
 package de.e2.coroutine.oneimage.callback
 
 import com.jayway.jsonpath.JsonPath
@@ -24,7 +26,7 @@ fun loadOneImage(
     query: String,
     onFailure: OnFailure = {},
     onSuccess: OnSuccess<BufferedImage>
-): Unit {
+) {
     requestImageUrl(query, onFailure) { url ->
         requestImageData(url, onFailure) { image ->
             onSuccess(image)
@@ -34,8 +36,8 @@ fun loadOneImage(
 
 private fun requestImageUrl(
     query: String, onFailure: OnFailure = {}, onSuccess: OnSuccess<String>
-): Unit {
-    val json = JerseyClient.pixabay("q=$query")
+) {
+    JerseyClient.pixabay("q=$query")
         .request()
         .async()
         .get(object : InvocationCallback<String> {
@@ -53,7 +55,7 @@ private fun requestImageUrl(
 
 private fun requestImageData(
     imageUrl: String, onFailure: OnFailure = {}, onSuccess: OnSuccess<BufferedImage>
-): Unit {
+) {
     JerseyClient.url(imageUrl)
         .request(MediaType.APPLICATION_OCTET_STREAM)
         .async()

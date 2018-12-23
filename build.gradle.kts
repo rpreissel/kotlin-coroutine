@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.Coroutines
 import java.net.URI
 
-val kotlinCoroutineVersion: String by extra { "0.26.1-eap13" }
+val kotlinCoroutineVersion: String by extra { "1.1.0" }
 
 buildscript {
     repositories {
@@ -20,7 +20,7 @@ apply {
 }
 
 plugins {
-    val kotlinVersion = "1.3.0-rc-57"
+    val kotlinVersion = "1.3.11"
     application
 
     id("org.jetbrains.kotlin.jvm") version kotlinVersion
@@ -56,9 +56,15 @@ dependencies {
     compile("org.glassfish.jersey.inject:jersey-hk2:2.26")
     compile("org.glassfish.jersey.media:jersey-media-json-jackson:2.26")
     compile("com.jayway.jsonpath:json-path:2.3.0")
+    compile("io.dropwizard.metrics:metrics-core:4.0.0")
+    compile("io.reactivex.rxjava2:rxjava:2.2.2")
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("io.projectreactor:reactor-test")
+    testImplementation("io.mockk:mockk:1.8.12.kotlin13")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+    testRuntimeOnly("net.bytebuddy:byte-buddy:1.9.3")
 }
 
 application {
@@ -72,4 +78,5 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
     kotlinOptions.apiVersion = "1.3"
     kotlinOptions.languageVersion = "1.3"
+    kotlinOptions.freeCompilerArgs = listOf("-Xuse-experimental=kotlin.Experimental")
 }

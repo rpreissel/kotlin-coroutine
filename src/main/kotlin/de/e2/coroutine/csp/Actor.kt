@@ -1,22 +1,26 @@
+@file:Suppress("PackageDirectoryMismatch")
+@file:UseExperimental(ObsoleteCoroutinesApi::class, ExperimentalCoroutinesApi::class)
+
 package de.e2.coroutine.csp.actor
 
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
 import de.e2.coroutine.combineImages
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.time.delay
 import java.awt.image.BufferedImage
 import java.io.FileOutputStream
 import java.io.InputStream
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 import javax.imageio.ImageIO
 import javax.ws.rs.client.InvocationCallback
 import javax.ws.rs.core.MediaType
@@ -25,48 +29,57 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.swing.Swing as UI
 
+sealed class PixabayMsg
+data class RequestImageMsg(
+    val query: String
+) : PixabayMsg()
 
-fun main(args: Array<String>): Unit = runBlocking {
+
+fun CoroutineScope.pixabayActor(resultChannel: SendChannel<BufferedImage>, parallel: Int) = actor<PixabayMsg> {
+    val urlChannel = Channel<String>()
+    repeat(parallel) {
+        launch {
+            for (url in urlChannel) {
+                val image = requestImageData(url)
+                resultChannel.send(image)
+            }
+        }
+    }
+
+    for (msg in channel) {
+        when (msg) {
+            is RequestImageMsg -> msg.apply {
+                urlChannel.send(requestImageUrl(query))
+            }
+        }
+        delay(Duration.ofMillis(100))
+    }
+}
+
+
+suspend fun main(): Unit = coroutineScope {
     JerseyClient.use {
-        val channel = Channel<BufferedImage>()
+        val resultChannel = Channel<BufferedImage>()
+        val pixabayActor = pixabayActor(resultChannel, 2)
         val dogsJob = launch(Dispatchers.Unconfined) {
-            retrieveImages("dogs", channel)
+            retrieveImages("dogs", pixabayActor)
         }
 
         val catsJob = launch(Dispatchers.Unconfined) {
-            retrieveImages("cats", channel)
+            retrieveImages("cats", pixabayActor)
         }
 
         val collageJob = launch(Dispatchers.Unconfined) {
-            createCollage(channel, 4)
+            createCollage(resultChannel, 4)
         }
-        delay(1, TimeUnit.HOURS)
+        delay(Duration.ofHours(1))
 
         dogsJob.cancel()
         catsJob.cancel()
         collageJob.cancel()
-
-        Unit
     }
 }
 
-sealed class PixabayMsg
-data class RequestImageUrlMsg(
-    val query: String,
-    val result: CompletableDeferred<String>
-) : PixabayMsg()
-
-
-val PixabayActor: SendChannel<PixabayMsg> = GlobalScope.actor<PixabayMsg> {
-    for (msg in channel) {
-        when (msg) {
-            is RequestImageUrlMsg -> msg.apply {
-                result.complete(requestImageUrl(query))
-            }
-        }
-        delay(100)
-    }
-}
 
 suspend fun createCollage(channel: ReceiveChannel<BufferedImage>, count: Int) {
     var imageId = 0
@@ -79,20 +92,19 @@ suspend fun createCollage(channel: ReceiveChannel<BufferedImage>, count: Int) {
     }
 }
 
-suspend fun retrieveImages(query: String, channel: SendChannel<BufferedImage>) {
-    val result = CompletableDeferred<String>()
-    val requestImageUrlMsg = RequestImageUrlMsg(query, result)
+suspend fun retrieveImages(
+    query: String,
+    pixabayActor: SendChannel<PixabayMsg>
+) {
+    val requestImageUrlMsg = RequestImageMsg(query)
     while (true) {
-        PixabayActor.send(requestImageUrlMsg)
-        val url = result.await()
-        val image = requestImageData(url)
-        channel.send(image)
-        delay(2, TimeUnit.SECONDS)
+        pixabayActor.send(requestImageUrlMsg)
+        delay(Duration.ofSeconds(2))
     }
 }
 
 private suspend fun requestImageUrl(query: String) = suspendCoroutine<String> { cont ->
-    JerseyClient.pixabay("q=$query&per_page=200")
+    JerseyClient.pixabay("q=$query&per_page=20")
         .request()
         .async()
         .get(object : InvocationCallback<String> {

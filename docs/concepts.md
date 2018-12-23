@@ -145,8 +145,8 @@ suspend fun createCollage(query: String, count: Int): BufferedImage {
 ```
 
 <pre class="fragment" data-fragment-index="3">
-<code class="kotlin line focus">suspend fun requestImageUrls(query: String, count: Int = 20): List<String>
-suspend fun requestImageData(imageUrl: String): BufferedImage</code></pre>
+    <code class="kotlin line focus">suspend fun requestImageUrls(query: String, count: Int = 20): List<String>
+    suspend fun requestImageData(imageUrl: String): BufferedImage</code></pre>
 
 <small class="fragment current-only" data-code-focus="2,3" data-fragment-index="1"></small>  
 <small class="fragment current-only" data-code-focus="1" data-fragment-index="2">__suspend__ macht den Unterschied</small>  

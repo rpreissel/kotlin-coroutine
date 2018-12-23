@@ -1,22 +1,25 @@
+@file:UseExperimental(ExperimentalCoroutinesApi::class)
+@file:Suppress("PackageDirectoryMismatch")
+
 package de.e2.coroutine.csp.producer
 
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
-import de.e2.coroutine.collage.reactive.requestImageData
 import de.e2.coroutine.combineImages
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
-import kotlinx.coroutines.currentScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.selectUnbiased
+import kotlinx.coroutines.time.delay
 import java.awt.image.BufferedImage
 import java.io.FileOutputStream
 import java.io.InputStream
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 import javax.imageio.ImageIO
 import javax.ws.rs.client.InvocationCallback
 import javax.ws.rs.core.MediaType
@@ -26,7 +29,7 @@ import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.swing.Swing as UI
 
 
-suspend fun main() {
+suspend fun main() = coroutineScope {
     JerseyClient.use {
         val dogsChannel = retrieveImages("dogs")
         val catsChannel = retrieveImages("cats")
@@ -38,7 +41,7 @@ suspend fun main() {
                 ImageIO.write(collage, "png", FileOutputStream("image-${imageId++}.png"))
             }
         }
-        delay(1, TimeUnit.HOURS)
+        delay(Duration.ofHours(1))
 
         dogsChannel.cancel()
         catsChannel.cancel()
@@ -53,29 +56,29 @@ suspend fun createCollage(
     val images = (1..count).map {
         selectUnbiased<BufferedImage> {
             channels.forEach { channel ->
-                channel.onReceive { it }
+                channel.onReceive { image -> image }
             }
         }
     }
     return combineImages(images)
 }
 
-suspend fun retrieveImages(
+fun CoroutineScope.retrieveImages(
     query: String
-): ReceiveChannel<BufferedImage> = currentScope {
+): ReceiveChannel<BufferedImage> =
     produce {
         while (isActive) {
             try {
                 val url = requestImageUrl(query)
                 val image = requestImageData(url)
                 send(image)
-                delay(2, TimeUnit.SECONDS)
+                delay(Duration.ofSeconds(2))
             } catch (exc: Exception) {
-                delay(1, TimeUnit.SECONDS)
+                delay(Duration.ofSeconds(1))
             }
         }
     }
-}
+
 
 private suspend fun requestImageUrl(query: String) = suspendCoroutine<String> { cont ->
     JerseyClient.pixabay("q=$query&per_page=200")

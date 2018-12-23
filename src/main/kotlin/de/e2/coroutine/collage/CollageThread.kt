@@ -1,3 +1,5 @@
+@file:Suppress("PackageDirectoryMismatch")
+
 package de.e2.coroutine.collage.thread
 
 import com.jayway.jsonpath.JsonPath
@@ -9,7 +11,7 @@ import java.io.InputStream
 import javax.imageio.ImageIO
 import javax.ws.rs.core.MediaType
 
-fun main(args: Array<String>) = JerseyClient.use {
+fun main(): Unit = JerseyClient.use {
     val collage = createCollage("dogs", 20)
     ImageIO.write(collage, "png", FileOutputStream("dogs.png"))
 }

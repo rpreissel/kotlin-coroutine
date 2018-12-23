@@ -1,19 +1,23 @@
+@file:UseExperimental(ExperimentalCoroutinesApi::class)
+@file:Suppress("PackageDirectoryMismatch")
+
 package de.e2.coroutine.csp.channel
 
 import com.jayway.jsonpath.JsonPath
 import de.e2.coroutine.JerseyClient
 import de.e2.coroutine.combineImages
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.time.delay
 import java.awt.image.BufferedImage
 import java.io.FileOutputStream
 import java.io.InputStream
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 import javax.imageio.ImageIO
 import javax.ws.rs.client.InvocationCallback
 import javax.ws.rs.core.MediaType
@@ -23,7 +27,7 @@ import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.swing.Swing as UI
 
 
-fun main(args: Array<String>): Unit = runBlocking {
+suspend fun main(): Unit = coroutineScope {
     JerseyClient.use {
         val channel = Channel<BufferedImage>()
         val dogsJob = launch(Dispatchers.Unconfined) {
@@ -37,7 +41,7 @@ fun main(args: Array<String>): Unit = runBlocking {
         val collageJob = launch(Dispatchers.Unconfined) {
             createCollage(channel, 4)
         }
-        delay(1, TimeUnit.HOURS)
+        delay(Duration.ofHours(1))
 
         dogsJob.cancel()
         catsJob.cancel()
@@ -64,9 +68,9 @@ suspend fun retrieveImages(query: String, channel: SendChannel<BufferedImage>) {
             val url = requestImageUrl(query)
             val image = requestImageData(url)
             channel.send(image)
-            delay(2, TimeUnit.SECONDS)
+            delay(Duration.ofSeconds(2))
         } catch (exc: Exception) {
-            delay(1, TimeUnit.SECONDS)
+            delay(Duration.ofSeconds(1))
         }
     }
 }
